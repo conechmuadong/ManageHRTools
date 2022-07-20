@@ -174,7 +174,6 @@ public class ManageHR {
                 }
             }
         }
-        mainMenu();
     }
     public static void showList(){
         int j=1;
@@ -189,6 +188,7 @@ public class ManageHR {
             case 1:
                 System.out.println("Choose Officer to Edit (Input Officer's Index): ");
                 editInformation(engineersList.get(input.nextInt()-1));
+                mainMenu();
                 break;
             case 2:
                 System.out.println("Choose Officer to show information (Input Officer's Index): ");
