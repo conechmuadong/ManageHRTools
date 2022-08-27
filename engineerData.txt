@@ -1,2 +1,4 @@
 Hung 20 0 2000 1 UET \n
 James 20 0 2000 0 MIT \n
+Nghia 20 0 1000 0 PTIT \n
+Paxton 20 0 2000 0 NTU \n

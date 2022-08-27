@@ -1,7 +1,9 @@
 import java.io.*;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Vector;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 public class ManageHR {
     public static final List<Engineer> engineersList = new Vector<>(0);
@@ -82,7 +84,7 @@ public class ManageHR {
                 break;
         }
     }
-    public static void searchInformation() {
+    public static void searchInformation() throws InterruptedException {
         clearScreen();
         boolean searching = true;
         while (searching) {
@@ -103,69 +105,79 @@ public class ManageHR {
                 System.out.println("Results not found");
             }
             System.out.println("1. Continue Searching\n2. Edit information \n0. Back to main menu");
-            switch (input.nextInt()){
-                case 0:
-                    searching = false;
-                    break;
-                case 2:
-                    editInformation(results);
-                    break;
+            try {
+                switch (input.nextInt()) {
+                    case 0:
+                        searching = false;
+                        break;
+                    case 2:
+                        editInformation(results);
+                        break;
+                }
+            }
+            catch (InputMismatchException e){
+                System.out.println("Invalid input");
+                System.out.println("Back to main menu");
+                searching = false;
             }
         }
         mainMenu();
     }
-    public static void editInformation (Engineer engineer){
+    public static void editInformation (Engineer engineer) throws InterruptedException {
         boolean editing = true;
         Scanner input = new Scanner(System.in);
         while (editing){
             System.out.println("What do you want to edit?\n1. Name\n2. Gender\n3. Age\n4. Salary\n5. Degree\n6. University\n0. Exit Editing");
-            switch (input.nextInt()){
-                default:
-                    editing = false;
-                    break;
-                case 1:
-                    System.out.println("Change Officer's name to: ");
-                    engineer.setName(input.next());
-                    break;
-                case 2:
-                    System.out.println("Change Officer's Gender to: 1.Male 2.Female 3.Others");
-                    if (input.nextInt()==1){
-                        engineer.setGender(Gender.Male);
-                    }
-                    else if(input.nextInt()==2){
-                        engineer.setGender(Gender.Female);
-                    }
-                    else {
-                        engineer.setGender(Gender.Others);
-                    }
-                    break;
-                case 3:
-                    System.out.println("Change Officer's age to: ");
-                    engineer.setAge(input.next());
-                    break;
-                case 4:
-                    System.out.println("Change Officer's salary to: ");
-                    engineer.setSalary(input.next());
-                    break;
-                case 5:
-                    System.out.println("Change Officer's Degree to: 1.Bachelor 2.Engineer 3.Master 4.Doctor");
-                    if (input.nextInt()==1){
-                        engineer.setDegree(Degree.Bachelor);
-                    }
-                    else if(input.nextInt()==2){
-                        engineer.setDegree(Degree.Engineer);
-                    }
-                    else if(input.nextInt()==3) {
-                        engineer.setDegree(Degree.Master);
-                    }
-                    else {
-                        engineer.setDegree(Degree.Doctor);
-                    }
-                    break;
-                case 6:
-                    System.out.println("Change Officer's university to: ");
-                    engineer.setUniversity(input.next());
-                    break;
+            try {
+                switch (input.nextInt()) {
+                    default:
+                        editing = false;
+                        break;
+                    case 1:
+                        System.out.println("Change Officer's name to: ");
+                        engineer.setName(input.next());
+                        break;
+                    case 2:
+                        System.out.println("Change Officer's Gender to: 1.Male 2.Female 3.Others");
+                        if (input.nextInt() == 1) {
+                            engineer.setGender(Gender.Male);
+                        } else if (input.nextInt() == 2) {
+                            engineer.setGender(Gender.Female);
+                        } else {
+                            engineer.setGender(Gender.Others);
+                        }
+                        break;
+                    case 3:
+                        System.out.println("Change Officer's age to: ");
+                        engineer.setAge(input.next());
+                        break;
+                    case 4:
+                        System.out.println("Change Officer's salary to: ");
+                        engineer.setSalary(input.next());
+                        break;
+                    case 5:
+                        System.out.println("Change Officer's Degree to: 1.Bachelor 2.Engineer 3.Master 4.Doctor");
+                        if (input.nextInt() == 1) {
+                            engineer.setDegree(Degree.Bachelor);
+                        } else if (input.nextInt() == 2) {
+                            engineer.setDegree(Degree.Engineer);
+                        } else if (input.nextInt() == 3) {
+                            engineer.setDegree(Degree.Master);
+                        } else {
+                            engineer.setDegree(Degree.Doctor);
+                        }
+                        break;
+                    case 6:
+                        System.out.println("Change Officer's university to: ");
+                        engineer.setUniversity(input.next());
+                        break;
+                }
+            }
+            catch (InputMismatchException e){
+                System.out.println("Your input is invalid");
+                System.out.println("Back to main menu...");
+                Thread.sleep(1000);
+                editing = false;
             }
             if (editing){
                 System.out.println("Information Edited Successfully\n1. Continue Edit\n0. Exit Editing");
@@ -175,7 +187,7 @@ public class ManageHR {
             }
         }
     }
-    public static void showList(){
+    public static void showList() throws InterruptedException {
         int j=1;
         Scanner input = new Scanner(System.in);
         System.out.println("No. |  Name  | Age | Gender ");
@@ -186,8 +198,21 @@ public class ManageHR {
         System.out.println("\n1. Edit information\n2. Show Officer's Information\n3.Back to main menu");
         switch (input.nextInt()){
             case 1:
-                System.out.println("Choose Officer to Edit (Input Officer's Index): ");
-                editInformation(engineersList.get(input.nextInt()-1));
+                boolean editting = true;
+                while (editting) {
+                    System.out.println("Choose Officer to Edit (Input Officer's Index): ");
+                    try {
+                        editting = false;
+                        editInformation(engineersList.get(input.nextInt() - 1));
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Out of Bounds Index. Try again");
+                        editting = true;
+                    } catch (InputMismatchException e) {
+                        System.out.println("Input must be an integer. Try again");
+                        editting = true;
+                        input.next();
+                    }
+                }
                 mainMenu();
                 break;
             case 2:
@@ -199,7 +224,7 @@ public class ManageHR {
                 }
                 mainMenu();
                 break;
-            case 3:
+            default:
                 clearScreen();
                 mainMenu();
                 break;
